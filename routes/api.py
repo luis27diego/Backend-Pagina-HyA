@@ -1,19 +1,23 @@
 from flask import Blueprint, jsonify, request
 from .auth import token_required
 import psycopg2
-from dotenv import load_dotenv
 from config import Config
 
 # Crear un Blueprint para las rutas de la API
 api_bp = Blueprint('api', __name__)
 
-# Cargar variables de entorno desde el archivo .env
-load_dotenv()
+
 
 def get_db_connection():
     config = Config()
-    conn = psycopg2.connect(config.DATABASE_URL)
-    return conn
+    if not config.DATABASE_URL:
+        raise Exception("DATABASE_URL no está configurada")
+    try:
+        conn = psycopg2.connect(config.DATABASE_URL)
+        return conn
+    except Exception as e:
+        print(f"Error al conectar a la base de datos: {str(e)}")
+        raise
 
 @api_bp.route('/subtitulos_con_detalles', methods=['GET'])
 def get_subtitulos_con_detalles():
