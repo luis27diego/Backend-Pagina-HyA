@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from .auth import token_required
 import psycopg2
 from dotenv import load_dotenv
-import os
+from config import Config
 
 # Crear un Blueprint para las rutas de la API
 api_bp = Blueprint('api', __name__)
@@ -11,12 +11,8 @@ api_bp = Blueprint('api', __name__)
 load_dotenv()
 
 def get_db_connection():
-    conn = psycopg2.connect(
-        host=os.getenv('POSTGRES_HOST'),
-        database=os.getenv('POSTGRES_DB'),
-        user=os.getenv('POSTGRES_USER'),
-        password=os.getenv('POSTGRES_PASSWORD')
-    )
+    config = Config()
+    conn = psycopg2.connect(config.DATABASE_URL)
     return conn
 
 @api_bp.route('/subtitulos_con_detalles', methods=['GET'])
