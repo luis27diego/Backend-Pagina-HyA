@@ -1,17 +1,21 @@
 from flask import Blueprint, jsonify, request
 from .auth import token_required
 import psycopg2
+from dotenv import load_dotenv
+import os
 
 # Crear un Blueprint para las rutas de la API
 api_bp = Blueprint('api', __name__)
 
-# Función para obtener la conexión a la base de datos
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
 def get_db_connection():
     conn = psycopg2.connect(
-        host='localhost',
-        database='HyA',
-        user='postgres',
-        password='1234'
+        host=os.getenv('DB_HOST'),
+        database=os.getenv('DB_NAME'),
+        user=os.getenv('DB_USER'),
+        password=os.getenv('DB_PASSWORD')
     )
     return conn
 
